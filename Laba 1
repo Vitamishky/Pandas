@@ -1,0 +1,7 @@
+import pandas as pd
+
+document = pd.read_csv('C:/Users/User/Desktop/transactions.csv')
+
+filt = document['STATUS'] == 'OK'
+print(document.loc[filt].sort_values(by = 'SUM', ascending = False).head(3))
+print(document.loc[filt & (document['CONTRACTOR'] == 'Umbrella, Inc')]['SUM'].sum())
