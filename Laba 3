@@ -1,0 +1,33 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+ht = pd.read_html("C:/Users/User/Desktop/results_ejudge.html")[0]
+exc = pd.read_excel("C:/Users/User/Desktop/students_info.xlsx")
+
+ht.fillna(0, inplace=True)
+exc.dropna(inplace=True)
+
+exc["Solved"] = [int(ht.loc[ht.User == i].Solved) for i in exc.login]
+group_faculty = sorted(list(set(exc.group_faculty)))
+group_out = sorted(list(set(exc.group_out)))
+
+average_per_group_faculty = [exc.loc[exc.group_faculty == group].Solved.mean() for group in group_faculty]
+average_per_group_out = [exc.loc[exc.group_out == group].Solved.mean() for group in group_out]
+
+plt.subplot(1, 2, 1)
+
+plt.bar(list(map(str, group_faculty)), average_per_group_faculty)
+plt.xlabel('Faculty Group')
+plt.ylabel('Average Mark')
+
+plt.subplot(1, 2, 2)
+
+plt.bar(list(map(str, group_out)), average_per_group_out)
+plt.xlabel('Group Out')
+
+plt.suptitle('Average mark in a group')
+plt.show()
+
+users = list(ht.loc[(ht.H >= 10) | (ht.G >= 10)].User)
+print("Номера факультетских групп: ", set([int(exc[exc.login == login].group_faculty) for login in users]))
+print("Номера групп по информатике: ", set([int(exc[exc.login == login].group_out) for login in users]))
